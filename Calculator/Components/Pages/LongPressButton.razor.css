@@ -1,0 +1,21 @@
+﻿
+.outer_circle {
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-image: conic-gradient(#d5525f 0% 0%, #d9d9d9 0% 100%);
+}
+
+.inner_circle{
+    text-align:center;
+    background-color:#676767;
+    width:80px;
+    height:80%;
+    border-radius:50%;
+    position: relative;
+    top: 10px;
+    left: 10px;
+}

@@ -1,0 +1,90 @@
+﻿@page "/centernet"
+@rendermode InteractiveServer
+
+<h0>センターネット</h0>
+センターネット<h1>新橋本社</h1>
+
+<p role="status">左辺: @num[0]</p>
+<p role="status">演算子: @ope</p>
+<p role="status">右辺: @num[1]</p>
+<p role="status">[答え]: @ans</p>
+
+<button class='btn btn-primary custom-button' @onclick='CalculatorDel'>削除</button>
+<br />
+
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(1)">1</button>
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(2)">2</button>
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(3)">3</button>
+<button class='btn btn-primary custom-button' @onclick='() => CalculatorOpe("+")'>+</button>
+
+<br />
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(4)">4</button>
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(5)">5</button>
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(6)">6</button>
+<button class='btn btn-primary custom-button' @onclick='() => CalculatorOpe("-")'>-</button>
+<br />
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(7)">7</button>
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(8)">8</button>
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(9)">9</button>
+<button class='btn btn-primary custom-button' @onclick='() => CalculatorOpe("*")'>*</button>
+<br />
+<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(0)">0</button>
+<button class="btn btn-primary custom-button" @onclick="CalculatorCal">=</button>
+<button class='btn btn-primary custom-button' @onclick='() => CalculatorOpe("/")'>/</button>
+
+@code {
+	private int[] num = { 0, 0 };
+	private int ans = 0;
+	private string ope = "";
+	private int index = 0;
+	private void CalculatorCount(int value)
+	{
+		num[index] = (num[index] * 10) + value;
+	}
+
+	private void CalculatorDel()
+	{
+		if (index == 0)
+		{
+			num[index] /= 10;
+		}
+		else if (index == 1)
+		{
+			if (num[index] == 0)
+			{
+				ope = "";
+				index = 0;
+			}
+			else
+			{
+				num[index] /= 10;
+			}			
+		}
+	}
+
+	private void CalculatorOpe(string str)
+	{
+		ope = str;
+		index = 1;
+	}
+
+	private void CalculatorCal()
+	{
+		if (ope == "+")
+		{
+			ans = num[0] + num[1];
+		}
+		else if (ope == "-")
+		{
+			ans = num[0] - num[1];
+		}
+		else if (ope == "*")
+		{
+			ans = num[0] * num[1];
+		}
+		else if (ope == "/")
+		{
+			ans = num[0] / num[1];
+		}
+	}
+}
