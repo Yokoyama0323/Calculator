@@ -1,7 +1,69 @@
-﻿
-.custom-button {
+﻿/* 全体コンテナ */
+.calculator {
+    width: 430px;
+    margin: 0 auto;
+}
+
+/* 上段表示エリア */
+.display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 800px;
+    margin: 0 auto;
+    margin-bottom: 5px;
+}
+
+/* 計算式 */
+.formula-label {
+    display: inline-block;
+    width: 500px; 
+    text-align: left;
+    font-size: 1.25rem;
+}
+
+/* 結果 */
+.result-label {
+    display: flex;
+    width: 500px;
+    text-align: right;
+    font-size: 1.25rem;
+}
+
+
+/* 削除ボタン用コンテナ */
+.deleteContainer {
+    width: 430px;
+    margin: 0 auto;
+    margin-bottom: 10px; 
+    position: relative; 
+}
+
+/* キーパッド各行*/
+.rowContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* 共通ボタン用スタイル */
+.customButton {
     width: 100px;
     height: 60px;
     font-size: 1.25rem;
-    /* 他のスタイルも追加可能 */
 }
+
+/* 削除ボタン専用スタイル */
+.deleteButton {
+    /*位置以外は同じため、共通スタイルをHTML側で指定*/
+    margin-left: 330px;    
+}
+
+/* 実行ボタン専用スタイル */
+.ActionButton {
+    width: 200px;
+    height: 60px;
+    font-size: 1.25rem;
+}
+

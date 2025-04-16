@@ -1,90 +1,143 @@
-﻿@page "/centernet"
+﻿@page "/"
 @rendermode InteractiveServer
 
-<h0>センターネット</h0>
-センターネット<h1>新橋本社</h1>
+<h3>電卓</h3>
 
-<p role="status">左辺: @num[0]</p>
-<p role="status">演算子: @ope</p>
-<p role="status">右辺: @num[1]</p>
-<p role="status">[答え]: @ans</p>
+<div class="calculator">
 
-<button class='btn btn-primary custom-button' @onclick='CalculatorDel'>削除</button>
-<br />
+	<!-- 表示エリア：計算式と結果 -->
+	<div class="display-header">
+		<span class="formula-label">計算式: @CalculatorFormula()</span>
+		<span class="result-label">@ans</span>
+	</div>
 
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(1)">1</button>
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(2)">2</button>
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(3)">3</button>
-<button class='btn btn-primary custom-button' @onclick='() => CalculatorOpe("+")'>+</button>
+	<br><br><br>
 
-<br />
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(4)">4</button>
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(5)">5</button>
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(6)">6</button>
-<button class='btn btn-primary custom-button' @onclick='() => CalculatorOpe("-")'>-</button>
-<br />
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(7)">7</button>
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(8)">8</button>
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(9)">9</button>
-<button class='btn btn-primary custom-button' @onclick='() => CalculatorOpe("*")'>*</button>
-<br />
-<button class="btn btn-primary custom-button" @onclick="()=>CalculatorCount(0)">0</button>
-<button class="btn btn-primary custom-button" @onclick="CalculatorCal">=</button>
-<button class='btn btn-primary custom-button' @onclick='() => CalculatorOpe("/")'>/</button>
+	<!-- 上段：削除ボタン -->
+	<div class="deleteContainer">
+		<button class="btn btn-primary customButton deleteButton" @onclick="CalculatorDel">削除</button>
+	</div>
+	<!-- 中段: 1 2 3 ＋ -->
+	<div class="rowContainer">
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(1)">1</button>
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(2)">2</button>
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(3)">3</button>
+		<button class="btn btn-primary customButton" @onclick='() => CalculatorOpe("+")'>＋</button>
+	</div>
+	<!-- 中段: 4 5 6 ー -->
+	<div class="rowContainer">
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(4)">4</button>
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(5)">5</button>
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(6)">6</button>
+		<button class="btn btn-primary customButton" @onclick='() => CalculatorOpe("ー")'>ー</button>
+	</div>
+	<!-- 中段: 7 8 9 * -->
+	<div class="rowContainer">
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(7)">7</button>
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(8)">8</button>
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(9)">9</button>
+		<button class="btn btn-primary customButton" @onclick='() => CalculatorOpe("*")'>*</button>
+	</div>
+	<!-- 下段: 0 実行 + ー -->
+	<div class="rowContainer">
+		<button class="btn btn-primary customButton" @onclick="()=>CalculatorCount(0)">0</button>
+		<button class="btn btn-primary ActionButton" @onclick="CalculatorCal">実行</button>
+		<button class='btn btn-primary customButton' @onclick='() => CalculatorOpe("/")'>/</button>
+	</div>
+</div>
+
+
 
 @code {
-	private int[] num = { 0, 0 };
-	private int ans = 0;
-	private string ope = "";
-	private int index = 0;
+	private string[] num = { "", "" };    //入力値
+	private int index = 0;          //左辺:0、右辺:1
+	private string ans = "結果："; //結果
+	private string ope = "";        //演算子
+
+	//数値を加える
 	private void CalculatorCount(int value)
 	{
-		num[index] = (num[index] * 10) + value;
+		if (num[index] == "")
+		{
+			num[index] = value.ToString();
+		}else if (!CheckOverFlor((Int64.Parse(num[index]) * 10) + (long)value))
+		{
+			num[index] = ((Int32.Parse(num[index]) * 10) + value).ToString();
+		}
 	}
 
+	//数値を消す
 	private void CalculatorDel()
 	{
 		if (index == 0)
 		{
-			num[index] /= 10;
+			if (num[index].Length > 0) { num[index]=num[index].Remove(num[index].Length - 1); }
 		}
 		else if (index == 1)
 		{
-			if (num[index] == 0)
+			if (num[1].Length == 0)
 			{
 				ope = "";
 				index = 0;
 			}
 			else
 			{
-				num[index] /= 10;
-			}			
+				if (num[1].Length > 0) { num[1] = num[1].Remove(num[1].Length - 1); }
+			}
 		}
 	}
 
+	//演算子を設定して、地点を右辺にする
 	private void CalculatorOpe(string str)
 	{
+		if(num[0]==""){ return; }
 		ope = str;
 		index = 1;
 	}
 
+	//実行ボタン
 	private void CalculatorCal()
 	{
+		if(num[1]==""){ return; }
+		//指定されている演算子ごとに、オーバーフローチェックをして結果を代入。
 		if (ope == "+")
 		{
-			ans = num[0] + num[1];
+			if (CheckOverFlor(Int64.Parse(num[0]) + Int64.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else { ans = "結果：" + (Int32.Parse(num[0]) + Int32.Parse(num[1])).ToString(); }
 		}
-		else if (ope == "-")
+		else if (ope == "ー")
 		{
-			ans = num[0] - num[1];
+			if (CheckOverFlor(Int64.Parse(num[0]) - Int64.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else { ans = "結果：" + (Int32.Parse(num[0]) - Int32.Parse(num[1])).ToString(); }
 		}
 		else if (ope == "*")
 		{
-			ans = num[0] * num[1];
+			if (CheckOverFlor(Int64.Parse(num[0]) * Int64.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else { ans = "結果：" + (Int32.Parse(num[0]) * Int32.Parse(num[1])).ToString(); }
 		}
 		else if (ope == "/")
 		{
-			ans = num[0] / num[1];
+			if (Int32.Parse(num[1]) == 0) { return; } //0除算禁止
+			if (CheckOverFlor(Int64.Parse(num[0]) / Int64.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else { ans = "結果：" + (Int32.Parse(num[0]) / Int32.Parse(num[1])).ToString(); }
 		}
+	}
+
+	//式表示
+	private string CalculatorFormula()
+	{
+		string formula = "";
+		formula += num[0].ToString();
+		formula += ope;
+		formula += num[1];
+		return formula;
+	}
+
+	//オーバーフローチェック
+	private bool CheckOverFlor(long number)
+	{
+		//オーバーフローならtrue、範囲内ならfalse
+		if (number >= Int32.MinValue && number <= Int32.MaxValue) { return false; }
+		else { return true; }
 	}
 }
