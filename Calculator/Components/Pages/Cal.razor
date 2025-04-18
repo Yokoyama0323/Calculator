@@ -1,6 +1,8 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
 <h3>電卓</h3>
 
 <div class="calculator">
@@ -15,7 +17,8 @@
 
 	<!-- 上段：削除ボタン -->
 	<div class="deleteContainer">
-		<button class="btn btn-primary customButton deleteButton" @onclick="CalculatorDel">削除</button>
+		<button class="btn btn-primary customButton deleteButton" @onclick="CalculatorStart">ON / AC</button>
+		<button class="btn btn-primary customButton deleteButton" @onclick="CalculatorDel">削除</button>		
 	</div>
 	<!-- 中段: 1 2 3 ＋ -->
 	<div class="rowContainer">
@@ -49,14 +52,34 @@
 
 
 @code {
-	private string[] num = { "", "" };    //入力値
-	private int index = 0;          //左辺:0、右辺:1
-	private string ans = "結果："; //結果
-	private string ope = "";        //演算子
+	private string[] num = { "", "" };	//入力値
+	private int index = 0;				//左辺:0、右辺:1
+	private string ans = "結果：";		//結果
+	private string ope = "";			//演算子
+	private bool isCalculator = false;
+
+	//計算機を起動する/数式をリセットする
+	private void CalculatorStart()
+	{
+		if (isCalculator)
+		{
+			index = 0;
+			num[0] = "0";
+			num[1] = "";
+			ans = "";
+			ope = "";
+		}
+		else
+		{
+			isCalculator = true;
+			num[0] = "0";
+		}
+	}
 
 	//数値を加える
 	private void CalculatorCount(int value)
 	{
+		if (!isCalculator){ return; }
 		if (num[index] == "")
 		{
 			num[index] = value.ToString();
