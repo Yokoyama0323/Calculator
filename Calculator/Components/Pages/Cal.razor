@@ -134,13 +134,21 @@
 		if (index == 0)
 		{
 			if (num[index].Length > 0) { num[index] = num[index].Remove(num[index].Length - 1); }
+			else{ sign[index] = ""; }
 		}
 		else if (index == 1)
 		{
 			if (num[1].Length == 0)
 			{
-				ope = "";
-				index = 0;
+				if (sign[index] == "-")
+				{
+					sign[index] = "";
+				}
+				else
+				{
+					ope = "";
+					index = 0;
+				}
 			}
 			else
 			{
