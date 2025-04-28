@@ -19,7 +19,7 @@
 	<div class="deleteContainer">
 		<button class="btn btn-primary customButton deleteButton" @onclick="CalculatorStart">全削除</button>
 	</div>
-	<div class="deleteContainer">		
+	<div class="deleteContainer">
 		<button class="btn btn-primary customButton deleteButton" @onclick="CalculatorDel">削除</button>
 	</div>
 	<!-- 中段: 1 2 3 ＋ -->
@@ -34,7 +34,7 @@
 		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(4)">4</button>
 		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(5)">5</button>
 		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(6)">6</button>
-		<button class="btn btn-primary customButton" @onclick='() => CalculatorOpe("-")'>-</button>
+		<button class="btn btn-primary customButton" @onclick='() => CalculatorMinus()'>-</button>
 	</div>
 	<!-- 中段: 7 8 9 * -->
 	<div class="rowContainer">
@@ -55,30 +55,34 @@
 
 @code {
 	private string[] num = { "", "" };  //入力値
-	private int index = 0;              //左辺:0、右辺:1
+	private string[] sign = { "", "" }; //符号
+	private int index = 0;              //左辺:0 右辺:1
 	private string ans = "結果：";     //結果
 	private string ope = "";            //演算子
 
-	//計算機を起動する/数式をリセットする
+
+	//数式をリセットする
 	private void CalculatorStart()
 	{
 		index = 0;
 		num[0] = "";
 		num[1] = "";
+		sign[0] = "";
+		sign[1] = "";
 		ans = "結果：";
 		ope = "";
 	}
 
 	//数値を加える
 	private void CalculatorCount(int value)
-	{		
+	{
 		if (num[index] == "")
 		{
 			num[index] = value.ToString();
 		}
-		else if (!CheckOverFlor((Int64.Parse(num[index]) * 10) + (long)value))
+		else if (!CheckOverFlor((double.Parse(num[index]) * 10) + (double)value))
 		{
-			num[index] = ((Int32.Parse(num[index]) * 10) + value).ToString();
+			num[index] += value.ToString();
 		}
 	}
 
@@ -111,6 +115,23 @@
 		index = 1;
 	}
 
+	private void CalculatorMinus()
+	{
+		if (num[0] == "")
+		{
+			sign[0] = "-";
+		}
+		else if (ope == "")
+		{
+			ope = "-";
+			index = 1;
+		}
+		else if (num[1] == "" && ope != "-")
+		{
+			sign[1] = "-";
+		}
+	}
+
 	//実行ボタン
 	private void CalculatorCal()
 	{
@@ -118,42 +139,51 @@
 		//指定されている演算子ごとに、オーバーフローチェックをして結果を代入。
 		if (ope == "+")
 		{
-			if (CheckOverFlor(Int64.Parse(num[0]) + Int64.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
-			else { ans = "結果：" + (Int32.Parse(num[0]) + Int32.Parse(num[1])).ToString(); }
+			if (CheckOverFlor(double.Parse(num[0]) + double.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else { ans = "結果：" + (double.Parse(sign[0] + num[0]) + double.Parse(sign[1] + num[1])).ToString(); }
 		}
 		else if (ope == "-")
 		{
-			if (CheckOverFlor(Int64.Parse(num[0]) - Int64.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
-			else { ans = "結果：" + (Int32.Parse(num[0]) - Int32.Parse(num[1])).ToString(); }
+			if (CheckOverFlor(double.Parse(num[0]) - double.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else { ans = "結果：" + (double.Parse(sign[0] + num[0]) - double.Parse(sign[1] + num[1])).ToString(); }
 		}
 		else if (ope == "*")
 		{
-			if (CheckOverFlor(Int64.Parse(num[0]) * Int64.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
-			else { ans = "結果：" + (Int32.Parse(num[0]) * Int32.Parse(num[1])).ToString(); }
+			if (CheckOverFlor(double.Parse(num[0]) * double.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else { ans = "結果：" + (double.Parse(sign[0] + num[0]) * double.Parse(sign[1] + num[1])).ToString(); }
 		}
 		else if (ope == "/")
 		{
-			if (Int32.Parse(num[1]) == 0) { return; } //0除算禁止
-			if (CheckOverFlor(Int64.Parse(num[0]) / Int64.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
-			else { ans = "結果：" + (Int32.Parse(num[0]) / Int32.Parse(num[1])).ToString(); }
+			if (Int32.Parse(num[1]) == 0) { ans = "0で割ることは出来ません。"; } //0除算禁止
+			else if (CheckOverFlor(double.Parse(num[0]) / double.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else { ans = "結果：" + (double.Parse(sign[0] + num[0]) / double.Parse(sign[1] + num[1])).ToString(); }
 		}
 	}
 
 	//式表示
 	private string CalculatorFormula()
 	{
+		//if (ans == "結果：")
+		//{
 		string formula = "";
-		formula += num[0].ToString();
+		formula += sign[0];
+		formula += num[0];
 		formula += ope;
+		formula += sign[1];
 		formula += num[1];
 		return formula;
+		//}
+		//else
+		//{
+		//	return "";
+		//}
 	}
 
 	//オーバーフローチェック
-	private bool CheckOverFlor(long number)
+	private bool CheckOverFlor(double number)
 	{
 		//オーバーフローならtrue、範囲内ならfalse
-		if (number >= Int32.MinValue && number <= Int32.MaxValue) { return false; }
+		if (number >= double.MinValue && number <= double.MaxValue) { return false; }
 		else { return true; }
 	}
 }
