@@ -1,11 +1,15 @@
 ﻿@page "/"
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Web
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
+<!-- キー入力を監視 -->
+<p>入力値: @numDisplay</p>
+
 <h3>電卓</h3>
 
-<div class="calculator">
+<div class="calculatorContainer" tabindex="0" @ref="captureArea" @onkeydown="HandleKeyInput">
 
 	<!-- 表示エリア：計算式と結果 -->
 	<div class="display-header">
@@ -61,6 +65,43 @@
 	private string ans = "結果：";     //結果
 	private string ope = "";            //演算子
 
+	private string numDisplay = "";//入力された数字を保持する
+	private int num1 = 0;
+
+	// ElementReferenceでフォーカス対象をキャプチャ
+	private ElementReference captureArea;
+
+	// キーボード入力を処理するイベントハンドラ
+	private void HandleKeyInput(KeyboardEventArgs e)
+	{
+		// キーが数字かどうかを判断（例："0"〜"9"）
+		if (int.TryParse(e.Key, out int value))
+		{
+			CalculatorCount(value);
+		}
+		else if (e.Key == "+" || e.Key == "-" || e.Key == "*" || e.Key == "/")
+		{
+			CalculatorOpe(e.Key);
+		}
+		else if (e.Key == "=")
+		{
+			CalculatorCal();
+		}		
+		else if (e.Key == "Backspace")
+		{
+			CalculatorDel();
+		}
+	}
+
+	// コンポーネントが初回レンダリング後にこのコンテナにフォーカスを与える
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			// フォーカスを当てるためにJavaScript互換で処理
+			await captureArea.FocusAsync();
+		}
+	}
 
 	//数式をリセットする
 	private void CalculatorStart()
