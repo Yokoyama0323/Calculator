@@ -59,11 +59,3 @@
     /*位置以外は同じため、共通スタイルをrazor側で指定*/
     margin-left: 330px;    
 }
-
-/* 実行ボタン専用スタイル */
-.ActionButton {
-    width: 200px;
-    height: 60px;
-    font-size: 1.25rem;
-}
-

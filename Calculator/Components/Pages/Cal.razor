@@ -46,7 +46,8 @@
 	<!-- 下段: 0 実行 + ー -->
 	<div class="rowContainer">
 		<button class="btn btn-primary customButton" @onclick="()=>CalculatorCount(0)">0</button>
-		<button class="btn btn-primary ActionButton" @onclick="CalculatorCal">実行</button>
+		<button class="btn btn-primary customButton" @onclick='() => DecimalPoint()'>.</button>
+		<button class="btn btn-primary customButton" @onclick="CalculatorCal">実行</button>
 		<button class='btn btn-primary customButton' @onclick='() => CalculatorOpe("/")'>/</button>
 	</div>
 </div>
@@ -106,7 +107,7 @@
 			}
 		}
 	}
-	
+
 	//演算子を設定して、地点を右辺にする
 	private void CalculatorOpe(string str)
 	{
@@ -148,6 +149,12 @@
 		{
 			sign[1] = "-";
 		}
+	}
+
+	//小数点
+	private void DecimalPoint()
+	{
+		num[index] += ".";
 	}
 
 	//実行ボタン
