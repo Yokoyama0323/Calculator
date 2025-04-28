@@ -1,6 +1,7 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Web
+@inject IJSRuntime JS
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
@@ -20,12 +21,14 @@
 	<br><br><br>
 
 	<!-- 上段：削除ボタン -->
-	<div class="deleteContainer">
-		<button class="btn btn-primary customButton deleteButton" @onclick="CalculatorStart">全削除</button>
+	<!-- 上段: 貼り付け コピー 全削除 削除 -->
+	<div class="rowContainer">
+		<button class="btn btn-primary customButton" @onclick="() => PasteContent()">張る</button>
+		<button class="btn btn-primary customButton" @onclick="() => CopyContent()">コピー</button>
+		<button class="btn btn-primary customButton" @onclick="() => CalculatorStart()">全削除</button>
+		<button class="btn btn-primary customButton" @onclick='() => CalculatorDel()'>削除</button>
 	</div>
-	<div class="deleteContainer">
-		<button class="btn btn-primary customButton deleteButton" @onclick="CalculatorDel">削除</button>
-	</div>
+
 	<!-- 中段: 1 2 3 ＋ -->
 	<div class="rowContainer">
 		<button class="btn btn-primary customButton" @onclick="() => CalculatorCount(1)">1</button>
@@ -71,6 +74,21 @@
 	// ElementReferenceでフォーカス対象をキャプチャ
 	private ElementReference captureArea;
 
+	//クリップボードの内容を貼り付け
+	private async Task PasteContent()
+	{
+		num[0] = await JS.InvokeAsync<string>("pasteFromClipboard");
+	}
+
+	//クリップボードに入力内容をコピー
+	private async Task CopyContent()
+	{
+		if (num[0]==""){ return; }
+		// Clipboard APIを使って入力内容をコピー
+		await JS.InvokeVoidAsync("navigator.clipboard.writeText", num);
+		// 必要ならtry-catchでエラーハンドリングも可能です
+	}
+
 	// キーボード入力を処理するイベントハンドラ
 	private void HandleKeyInput(KeyboardEventArgs e)
 	{
@@ -86,7 +104,7 @@
 		else if (e.Key == "=")
 		{
 			CalculatorCal();
-		}		
+		}
 		else if (e.Key == "Backspace")
 		{
 			CalculatorDel();
@@ -134,7 +152,7 @@
 		if (index == 0)
 		{
 			if (num[index].Length > 0) { num[index] = num[index].Remove(num[index].Length - 1); }
-			else{ sign[index] = ""; }
+			else { sign[index] = ""; }
 		}
 		else if (index == 1)
 		{
@@ -164,7 +182,7 @@
 		{
 			sign[0] = "-";
 		}
-		else if (ans == "結果：" && ope == "")  //演算子をセット
+		else if (num[0] != ""  && ope == "")  //演算子をセット
 		{
 			ope = str;
 			index = 1;
