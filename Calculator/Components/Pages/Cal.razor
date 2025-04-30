@@ -115,13 +115,13 @@
 		}
 	}
 
-	//クリップボードに入力内容をコピー
+	//クリップボードに答えをコピー
 	private async Task CopyContent()
 	{
-		if (num[0] == "") { return; }
+		if (ans == "結果：") { return; }
+		string ansNum = ans.Substring(3, ans.Length - 3);
 		// Clipboard APIを使って入力内容をコピー
-		await JS.InvokeVoidAsync("navigator.clipboard.writeText", num);
-		// 必要ならtry-catchでエラーハンドリングも可能です
+		await JS.InvokeVoidAsync("navigator.clipboard.writeText", ansNum);
 	}
 
 	// キーボード入力を処理するイベントハンドラ
