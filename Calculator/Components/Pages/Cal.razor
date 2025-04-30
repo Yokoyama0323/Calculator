@@ -101,6 +101,7 @@
 					num[1] = "";
 					ope = str2;
 					index = 1;
+					//右辺があるかチェック
 					if (paste.Length > indexpaste)
 					{
 						str3 = paste.Substring(indexpaste + 1, paste.Length - (indexpaste + 1));
@@ -118,6 +119,7 @@
 	//クリップボードに答えをコピー
 	private async Task CopyContent()
 	{
+		//答えがない場合はスキップ
 		if (ans == "結果：") { return; }
 		string ansNum = ans.Substring(3, ans.Length - 3);
 		// Clipboard APIを使って入力内容をコピー
@@ -127,7 +129,7 @@
 	// キーボード入力を処理するイベントハンドラ
 	private void HandleKeyInput(KeyboardEventArgs e)
 	{
-		// キーが数字かどうかを判断（例："0"〜"9"）
+		// キーが数字かどうかを判断
 		if (int.TryParse(e.Key, out int value))
 		{
 			CalculatorCount(value);
@@ -136,7 +138,11 @@
 		{
 			CalculatorOpe(e.Key);
 		}
-		else if (e.Key == "=")
+		else if (e.Key == ".")
+		{
+			DecimalPoint();
+		}
+		else if (e.Key == "=" || e.Key == "Enter")
 		{
 			CalculatorCal();
 		}
@@ -175,7 +181,7 @@
 		{
 			num[index] = value.ToString();
 		}
-		else if (!CheckOverFlor((float.Parse(num[index]) * 10) + (float)value))
+		else if (!CheckOverFlor((double.Parse(num[index]) * 10) + (double)value))
 		{
 			num[index] += value.ToString();
 		}
@@ -260,7 +266,7 @@
 		{
 			if (num[index] == "")
 			{
-				num[index] += "0.";
+				num[index] = "0.";
 			}
 			else
 			{
@@ -272,27 +278,29 @@
 	//実行ボタン
 	private void CalculatorCal()
 	{
+		//式が未完成だったらスキップ
 		if (num[1] == "") { return; }
+
 		//指定されている演算子ごとに、オーバーフローチェックをして結果を代入。
 		if (ope == "+")
 		{
-			if (CheckOverFlor(float.Parse(num[0]) + float.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			if (CheckOverFlor(double.Parse(num[0]) + double.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
 			else { ans = "結果：" + (float.Parse(sign[0] + num[0]) + float.Parse(sign[1] + num[1])).ToString(); }
 		}
 		else if (ope == "-")
 		{
-			if (CheckOverFlor(float.Parse(num[0]) - float.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			if (CheckOverFlor(double.Parse(num[0]) - double.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
 			else { ans = "結果：" + (float.Parse(sign[0] + num[0]) - float.Parse(sign[1] + num[1])).ToString(); }
 		}
 		else if (ope == "*")
 		{
-			if (CheckOverFlor(float.Parse(num[0]) * float.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			if (CheckOverFlor(double.Parse(num[0]) * double.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
 			else { ans = "結果：" + (float.Parse(sign[0] + num[0]) * float.Parse(sign[1] + num[1])).ToString(); }
 		}
 		else if (ope == "/")
 		{
 			if (float.Parse(num[1]) == 0) { ans = "0で割ることは出来ません。"; } //0除算禁止
-			else if (CheckOverFlor(float.Parse(num[0]) / float.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
+			else if (CheckOverFlor(double.Parse(num[0]) / double.Parse(num[1]))) { ans = "結果：計算範囲外です。"; }
 			else { ans = "結果：" + (float.Parse(sign[0] + num[0]) / float.Parse(sign[1] + num[1])).ToString(); }
 		}
 	}
@@ -312,7 +320,7 @@
 	}
 
 	//オーバーフローチェック
-	private bool CheckOverFlor(float number)
+	private bool CheckOverFlor(double number)
 	{
 		//オーバーフローならtrue、範囲内ならfalse
 		if (number >= float.MinValue && number <= float.MaxValue) { return false; }

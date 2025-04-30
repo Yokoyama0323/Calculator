@@ -201,15 +201,15 @@ main[b-tkzdxgl4fp] {
         overflow-y: auto;
     }
 }
-/* _content/Calculator/Components/Pages/Centernet.razor.rz.scp.css */
+/* _content/Calculator/Components/Pages/Cal.razor.rz.scp.css */
 /* 全体コンテナ */
-.calculator[b-vdwkoeo6k8] {
+.calculatorContainer[b-bdoyxdrdxf] {
     width: 430px;
     margin: 0 auto;
 }
 
 /* 上段表示エリア */
-.display-header[b-vdwkoeo6k8] {
+.display-header[b-bdoyxdrdxf] {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -219,7 +219,7 @@ main[b-tkzdxgl4fp] {
 }
 
 /* 計算式 */
-.formula-label[b-vdwkoeo6k8] {
+.formula-label[b-bdoyxdrdxf] {
     display: inline-block;
     width: 500px; 
     text-align: left;
@@ -227,7 +227,7 @@ main[b-tkzdxgl4fp] {
 }
 
 /* 結果 */
-.result-label[b-vdwkoeo6k8] {
+.result-label[b-bdoyxdrdxf] {
     display: flex;
     width: 500px;
     text-align: right;
@@ -236,7 +236,7 @@ main[b-tkzdxgl4fp] {
 
 
 /* 削除ボタン用コンテナ */
-.deleteContainer[b-vdwkoeo6k8] {
+.deleteContainer[b-bdoyxdrdxf] {
     width: 430px;
     margin: 0 auto;
     margin-bottom: 10px; 
@@ -244,7 +244,7 @@ main[b-tkzdxgl4fp] {
 }
 
 /* キーパッド各行*/
-.rowContainer[b-vdwkoeo6k8] {
+.rowContainer[b-bdoyxdrdxf] {
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -252,25 +252,17 @@ main[b-tkzdxgl4fp] {
 }
 
 /* 共通ボタン用スタイル */
-.customButton[b-vdwkoeo6k8] {
+.customButton[b-bdoyxdrdxf] {
     width: 100px;
     height: 60px;
     font-size: 1.25rem;
 }
 
 /* 削除ボタン専用スタイル */
-.deleteButton[b-vdwkoeo6k8] {
-    /*位置以外は同じため、共通スタイルをHTML側で指定*/
+.deleteButton[b-bdoyxdrdxf] {
+    /*位置以外は同じため、共通スタイルをrazor側で指定する*/
     margin-left: 330px;    
 }
-
-/* 実行ボタン専用スタイル */
-.ActionButton[b-vdwkoeo6k8] {
-    width: 200px;
-    height: 60px;
-    font-size: 1.25rem;
-}
-
 /* _content/Calculator/Components/Pages/LongPressButton.razor.rz.scp.css */
 
 .outer_circle[b-ice91nsher] {
